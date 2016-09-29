@@ -71,7 +71,7 @@
     <div class="row" style="margin-top: 10vh;">
       <div class="col s4">
         <div class="card">
-          <div class="card deep-purple darken-2">
+          <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -84,7 +84,7 @@
         </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -92,11 +92,13 @@
             <div class="card-action">
               <a href="#">Action Button</a>
               <a href="#">Action Button</a>
+              <input type="checkbox" id="test5" />
+              <label for="test5"></label>
             </div>
           </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -111,7 +113,7 @@
     <div class="row">
       <div class="col s4">
         <div class="card">
-          <div class="card deep-purple darken-2">
+          <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -124,7 +126,7 @@
         </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -136,7 +138,7 @@
           </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -151,7 +153,7 @@
     <div class="row">
       <div class="col s4">
         <div class="card">
-          <div class="card deep-purple darken-2">
+          <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -164,7 +166,7 @@
         </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -176,7 +178,7 @@
           </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -191,7 +193,7 @@
     <div class="row">
       <div class="col s4">
         <div class="card">
-          <div class="card deep-purple darken-2">
+          <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -204,7 +206,7 @@
         </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -216,7 +218,7 @@
           </div>
       </div>
       <div class="col s4">
-        <div class="card deep-purple darken-2">
+        <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title">Sub-Head Name</span>
               <p>TASK DESCRIPTION</p>
@@ -236,7 +238,7 @@
       <div class="col s6 offset-s3">
         <form method="post">
           
-            <h2 class="form-signin-heading">Assign</h2><hr />
+            <h2 class="form-signin-heading" style="color:#673ab7;">Assign</h2>
             
             <div id="error">
             <?php
@@ -256,9 +258,9 @@
                 <input type="text" class="form-control" name="txt_task" placeholder="Task" />
 
 
-                <input type="date" class="form-control" name="txt_date" />
+                <input type="date" class="datepicker" name="txt_date" placeholder="Date" />
             
-                <button type="submit" name="btn-assign" class="waves-effect waves-light btn">
+                <button type="submit" name="btn-assign" class="waves-effect waves-light deep-purple darken-2 btn">
                       Assign
                 </button>
 
@@ -278,6 +280,12 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
-
+  <script type="text/javascript">
+    $('.datepicker').pickadate({
+      selectMonths: true, // Creates a dropdown to control month
+      selectYears: 15, // Creates a dropdown of 15 years to control year
+      format: 'yyyy-mm-dd'
+    });
+  </script>
   </body>
 </html>
