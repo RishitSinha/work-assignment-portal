@@ -16,10 +16,10 @@ if(isset($_POST['btn-login']))
   if($login->doLogin($uname,$upass))
   {
         if($login->checkHead($uname)){
-        $login->redirect('head-home.php');
+          $login->redirect('head-home.php');
         }
         else{
-            $login->redirect('home.php');
+          $login->redirect('home.php');
         }
   }
   else

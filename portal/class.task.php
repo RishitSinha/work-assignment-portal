@@ -95,7 +95,7 @@ class TASK
 													  
 				
 			$stmt->execute();
-			$this->disengage($shname);
+			$this->engage($shname);
 			return $stmt;
 			
 		}
