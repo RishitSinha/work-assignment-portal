@@ -5,21 +5,26 @@ $login = new USER();
 
 if($login->is_loggedin()!="")
 {
-	$login->redirect('home.php');
+    if($login->checkHead($uname)){
+	$login->redirect('head.php');
+}
+else {
+    $login->redirect('subhead.php');
+}
 }
 
-if(isset($_POST['btn-login']))
+if(isset($_POST['login-btn']))
 {
-	$uname = strip_tags($_POST['txt_uname_email']);
-	$upass = strip_tags($_POST['txt_password']);
+	$uname = strip_tags($_POST['username']);
+	$upass = strip_tags($_POST['password']);
 		
 	if($login->doLogin($uname,$upass))
 	{
         if($login->checkHead($uname)){
-         $login->redirect('home.php');// Create a diff home for head   
+         $login->redirect('head.php');// Create a diff home for head   
         }
         else {
-            $login->redirect('home1.php');//Create a diff home for sub head
+            $login->redirect('subhead.php');//Create a diff home for sub head
         }
 	}
 	else
@@ -46,7 +51,7 @@ if(isset($_POST['btn-login']))
         
        <form class="form-signin" method="post" id="login-form">
       
-        <h2 class="form-signin-heading">Log In to WebApp.</h2><hr />
+        <h2 class="form-signin-heading">Log In to Work Portal</h2><hr />
         
         <div id="error">
         <?php
@@ -62,23 +67,22 @@ if(isset($_POST['btn-login']))
         </div>
         
         <div class="form-group">
-        <input type="text" class="form-control" name="txt_uname_email" placeholder="Username or E mail ID" required />
+        <input type="text" class="form-control" name="username" placeholder="Username" required />
         <span id="check-e"></span>
         </div>
         
         <div class="form-group">
-        <input type="password" class="form-control" name="txt_password" placeholder="Your Password" />
+        <input type="password" class="form-control" name="password" placeholder="Your Password" />
         </div>
        
      	<hr />
         
         <div class="form-group">
-            <button type="submit" name="btn-login" class="btn btn-default">
+            <button type="submit" name="login-btn" class="btn btn-default">
                 	<i class="glyphicon glyphicon-log-in"></i> &nbsp; SIGN IN
             </button>
         </div>  
       	<br />
-            <label>Don't have account yet ! <a href="sign-up.php">Sign Up</a></label>
       </form>
 
     </div>

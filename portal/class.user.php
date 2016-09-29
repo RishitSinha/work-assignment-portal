@@ -44,7 +44,19 @@ class USER
 		}
 	}
 	
-	
+	/*public function workassign($assignto,$work,$assignby)
+	{
+		try
+		{
+			$stmt = $this->conn->prepare("INSERT INTO detail(`assigned_to`, `work`, `assigned_by`) VALUES ($assignto, $work, $assignby)");
+			$stmt->execute();
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
+		*/
 	public function doLogin($uname,$upass)
 	{
 		try

@@ -5,7 +5,14 @@
 	
 	if($user_logout->is_loggedin()!="")
 	{
-		$user_logout->redirect('home.php');
+		if($login->is_loggedin()!="")
+{
+    if($login->checkHead($uname)){
+	$login->redirect('head.php');
+}
+else {
+    $login->redirect('subhead.php');
+}
 	}
 	if(isset($_GET['logout']) && $_GET['logout']=="true")
 	{

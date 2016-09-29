@@ -1,94 +1,73 @@
 <?php
 
-require_once('dbconfig.php');
+	require_once("session.php");
+	
+	require_once("class.user.php");
+	$auth_user = new USER();
+	$assignto="5";
+  $assignby="2";
+  $work="dfghj";
+  $auth_user->workassign($assignto,$work,$assignby);
+	
+	$user_id = $_SESSION['user_session'];
+	
+	$stmt = $auth_user->runQuery("SELECT * FROM login WHERE user_id=:user_id");
+	$stmt->execute(array(":user_id"=>$user_id));
+	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+  
+  $stmts = $auth_user->runQuery("SELECT * FROM login, detail WHERE user_id=assigned_to AND assigned_by= :user_id");
+  $stmts->execute(array(":user_id"=>$user_id));
+  ?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="jquery-1.11.3-jquery.min.js"></script>
+<link rel="stylesheet" href="style.css" type="text/css"  />
+<title>welcome</title>
+</head>
 
-class HEAD
-{	
+<body>
 
-	private $conn;
+          <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+			  <span class="glyphicon glyphicon-user"></span>&nbsp;Hi <?php echo $userRow['full_name']; ?>&nbsp;<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="logout.php?logout=true"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Sign Out</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="clearfix"></div>
+    	
+    
+<div class="container-fluid" style="margin-top:80px;">
 	
-	public function __construct()
-	{
-		$database = new Database();
-		$db = $database->dbConnection();
-		$this->conn = $db;
-    }
-	
-	public function runQuery($sql)
-	{
-		$stmt = $this->conn->prepare($sql);
-		return $stmt;
-	}
-	public function checkHead($uname)
-	{
-		try
-		{
-			$stmt = $this->conn->prepare("SELECT * FROM login WHERE user_name=:uname ");
-			$stmt->execute(array(':uname'=>$uname));
-			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
-			if($stmt->rowCount() == 1)
-			{
-				if( $userRow['head'])
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}
-		catch(PDOException $e)
-		{
-			echo $e->getMessage();
-		}
-	}
-	
-	
-	public function doLogin($uname,$upass)
-	{
-		try
-		{
-			$stmt = $this->conn->prepare("SELECT * FROM login WHERE user_name=:uname ");
-			$stmt->execute(array(':uname'=>$uname));
-			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
-			if($stmt->rowCount() == 1)
-			{
-				if($upass== $userRow['user_pass'])
-				{
-					$_SESSION['user_session'] = $userRow['user_id'];
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}
-		catch(PDOException $e)
-		{
-			echo $e->getMessage();
-		}
-	}
-	
-	public function is_loggedin()
-	{
-		if(isset($_SESSION['user_session']))
-		{
-			return true;
-		}
-	}
-	
-	public function redirect($url)
-	{
-		header("Location: $url");
-	}
-	
-	public function doLogout()
-	{
-		session_destroy();
-		unset($_SESSION['user_session']);
-		return true;
-	}
-}
-?>
+    <div class="container">
+    
+    	<label class="h5">Welcome : <?php print($userRow['full_name']); ?></label>
+        <hr />
+        <?php 
+        while($userRows=$stmts->fetch()){ 
+          if($userRows['completed']==0){        //only the incomoleted work will be shown
+            ?>
+      <label class="h5">You have Assigned <?php print($userRows['work']); ?> </label>
+      <label class="h5">To <?php print($userRows['full_name']); ?></label>
+        <hr />
+        <?php }}?>
+    
+    </div>
+
+</div>
+
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
