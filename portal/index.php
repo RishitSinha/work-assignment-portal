@@ -5,89 +5,99 @@ $login = new USER();
 
 if($login->is_loggedin()!="")
 {
-    if($login->checkHead($uname)){
-	$login->redirect('head.php');
-}
-else {
-    $login->redirect('subhead.php');
-}
+  $login->redirect('home.php');
 }
 
-if(isset($_POST['login-btn']))
+if(isset($_POST['btn-login']))
 {
-	$uname = strip_tags($_POST['username']);
-	$upass = strip_tags($_POST['password']);
-		
-	if($login->doLogin($uname,$upass))
-	{
+  $uname = strip_tags($_POST['txt_uname_email']);
+  $upass = strip_tags($_POST['txt_password']);
+    
+  if($login->doLogin($uname,$upass))
+  {
         if($login->checkHead($uname)){
-         $login->redirect('head.php');// Create a diff home for head   
+        $login->redirect('head-home.php');
         }
-        else {
-            $login->redirect('subhead.php');//Create a diff home for sub head
+        else{
+            $login->redirect('home.php');
         }
-	}
-	else
-	{
-		$error = "Wrong Details !";
-	}	
+  }
+  else
+  {
+    $error = "Wrong Details !";
+  } 
 }
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coding Cage : Login</title>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-<link rel="stylesheet" href="style.css" type="text/css"  />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Work Assignment Portal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
+
+
+
+
 <body>
-
-<div class="signin-form">
-
-	<div class="container">
-     
-        
-       <form class="form-signin" method="post" id="login-form">
-      
-        <h2 class="form-signin-heading">Log In to Work Portal</h2><hr />
-        
-        <div id="error">
+  <nav class="light-blue lighten-1" role="navigation" style="margin-bottom:15vh;">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo center">Work Assignment Portal</a>
+    </div>
+  </nav>
+  <div class="row">
+    <div class="col s4 offset-s4">
+      <center>
+        <h1>Welcome!</h1>
+        <h5>Please Sign-In to Continue</h5>
+      </center>
+    </div>
+  </div>
+<div id="error">
         <?php
-			if(isset($error))
-			{
-				?>
+            if(isset($error))
+            {
+                ?>
                 <div class="alert alert-danger">
-                   <i class="glyphicon glyphicon-warning-sign"></i> &nbsp; <?php echo $error; ?> !
+                   <center><i class="material-icons">error</i> &nbsp; <?php echo $error; ?> !</center>
                 </div>
                 <?php
-			}
-		?>
+            }
+        ?>
         </div>
-        
-        <div class="form-group">
-        <input type="text" class="form-control" name="username" placeholder="Username" required />
-        <span id="check-e"></span>
+<div class="row">
+    <form class="col s4 offset-s4" method="post">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="first_name" type="text" name="txt_uname_email" class="validate">
+          <label for="name">Username</label>
         </div>
-        
-        <div class="form-group">
-        <input type="password" class="form-control" name="password" placeholder="Your Password" />
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="password" type="password" name="txt_password" class="validate">
+          <label for="password">Password</label>
         </div>
-       
-     	<hr />
-        
-        <div class="form-group">
-            <button type="submit" name="login-btn" class="btn btn-default">
-                	<i class="glyphicon glyphicon-log-in"></i> &nbsp; SIGN IN
-            </button>
-        </div>  
-      	<br />
-      </form>
+      </div>
+      <div class="row">
+        <div class="input-field col s4 offset-s4">
+          <button type="submit" name="btn-login" class="waves-effect waves-light btn">Sign-In<i class="material-icons right">input</i></button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-    </div>
-    
-</div>
 
-</body>
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+
+  </body>
 </html>
