@@ -46,7 +46,58 @@ class TASK
 		$stmt = $this->conn->prepare($sql);
 		return $stmt;
 	}
-
+	public function getName($userid)
+	{
+		try
+		{
+			$stmt = $this->conn->prepare("SELECT user_id, full_name FROM  user  WHERE user_id=$userid ");
+			$stmt->execute();
+			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
+			echo $taskRow->full_name;
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
+	public function busy($shname){
+			try
+		{
+			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
+			$stmt->execute();
+			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
+			if($taskRow){
+			return true;
+		}
+		else {
+			return false;
+		}
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
+	public function getMyTasks($shname)
+	{
+		try
+		{
+			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
+			$stmt->execute();
+			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
+			if($taskRow){
+			echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc,'<br>';
+			return true;
+		}
+		else {
+			return false;
+		}
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
 	public function getActiveTasks()
 	{
 		try
@@ -72,6 +123,23 @@ class TASK
 			while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
 				echo $taskRow->user_name." assigned the task: ".$taskRow->task_desc." to ".$taskRow->task_for,'<br>';
 			}
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
+
+	public function deleteTask($shname)
+	{
+
+		try
+		{
+			$stmt = $this->conn->prepare("DELETE FROM task WHERE task_for='$shname' AND completed=0");
+			$stmt->execute();
+			$this->disengage($shname);
+			return $stmt;
+			
 		}
 		catch(PDOException $e)
 		{
@@ -105,7 +173,26 @@ class TASK
 		}
 	}
 
-	
+	public function edit($task,$shname)
+	{
+
+		try
+		{
+			$stmt = $this->conn->prepare("UPDATE task(task_desc) 
+		                                               VALUES(:task) WHERE task_for='$shname' AND completed=0");
+												  
+			$stmt->bindparam(":task", $task);
+
+			$stmt->execute();
+			$this->engage($shname);
+			return $stmt;
+			
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
 	
 	public function redirect($url)
 	{

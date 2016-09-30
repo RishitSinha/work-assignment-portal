@@ -23,7 +23,7 @@ class USER
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT * FROM login WHERE user_name=:uname ");
+			$stmt = $this->conn->prepare("SELECT * FROM user WHERE user_name=:uname ");
 			$stmt->execute(array(':uname'=>$uname));
 			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 			if($stmt->rowCount() == 1)
@@ -43,25 +43,12 @@ class USER
 			echo $e->getMessage();
 		}
 	}
-	
-	/*public function workassign($assignto,$work,$assignby)
-	{
-		try
-		{
-			$stmt = $this->conn->prepare("INSERT INTO detail(`assigned_to`, `work`, `assigned_by`) VALUES ($assignto, $work, $assignby)");
-			$stmt->execute();
-		}
-		catch(PDOException $e)
-		{
-			echo $e->getMessage();
-		}
-	}
-		*/
+
 	public function doLogin($uname,$upass)
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT * FROM login WHERE user_name=:uname ");
+			$stmt = $this->conn->prepare("SELECT * FROM user WHERE user_name=:uname ");
 			$stmt->execute(array(':uname'=>$uname));
 			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 			if($stmt->rowCount() == 1)

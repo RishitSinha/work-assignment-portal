@@ -5,15 +5,16 @@
 	
 	if($user_logout->is_loggedin()!="")
 	{
-		if($login->is_loggedin()!="")
+		if($user_logout->is_loggedin()!="")
 {
-    if($login->checkHead($uname)){
-	$login->redirect('head.php');
+    if($user_logout->checkHead($uname)){
+	$user_logout->redirect('head.php');
 }
 else {
-    $login->redirect('subhead.php');
+    $user_logout->redirect('subhead.php');
 }
 	}
+}
 	if(isset($_GET['logout']) && $_GET['logout']=="true")
 	{
 		$user_logout->doLogout();

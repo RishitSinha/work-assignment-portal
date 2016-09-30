@@ -12,7 +12,7 @@
 	$stmt->execute(array(":user_id"=>$user_id));
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
   
-  $stmts = $auth_user->runQuery("SELECT * FROM login, detail WHERE user_id=assigned_by AND assigned_to= :user_id");
+  $stmts = $auth_user->runQuery("SELECT * FROM user, detail WHERE user_id=assigned_by AND assigned_to= :user_id");
   $stmts->execute(array(":user_id"=>$user_id));
   ?>
 <html>

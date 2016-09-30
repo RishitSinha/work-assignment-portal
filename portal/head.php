@@ -11,11 +11,11 @@
 	
 	$user_id = $_SESSION['user_session'];
 	
-	$stmt = $auth_user->runQuery("SELECT * FROM login WHERE user_id=:user_id");
+	$stmt = $auth_user->runQuery("SELECT * FROM user WHERE user_id=:user_id");
 	$stmt->execute(array(":user_id"=>$user_id));
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
   
-  $stmts = $auth_user->runQuery("SELECT * FROM login, detail WHERE user_id=assigned_to AND assigned_by= :user_id");
+  $stmts = $auth_user->runQuery("SELECT * FROM user, task WHERE user_id=assigned_to AND assigned_by= :user_id");
   $stmts->execute(array(":user_id"=>$user_id));
   ?>
 <html>
