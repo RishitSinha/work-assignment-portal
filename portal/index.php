@@ -5,7 +5,7 @@ $login = new USER();
 
 if($login->is_loggedin()!="")
 {
-  $login->redirect('head-home.php');
+  $login->redirect('logout.php?logout=true');
 }
 
 if(isset($_POST['btn-login']))

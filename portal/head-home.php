@@ -99,21 +99,18 @@
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
   <script src="js/index.js"></script>
-  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-   <script type="text/javascript">
+  <script type="text/javascript">
 
 
-   function showEdit($id){
+  function showEdit($id){
     console.log("Show Edit: "+$id);
-      $('#editForm'+$id).show();
-   }
+    $('#editForm'+$id).fadeToggle();
+  }
 
-   function showAssign($id){
+  function showAssign($id){
     console.log("Show Assign: "+$id);
-      $('#assignForm'+$id).show();
-   }
-
+    $('#assignForm'+$id).fadeToggle();
+  }
 
     // $('.datepicker').pickadate({
     //   selectMonths: true, // Creates a dropdown to control month

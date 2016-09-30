@@ -6,10 +6,18 @@ class TASK
 {	
 
 	private $conn;
+
+	public function __construct()
+	{
+		$database = new Database();
+		$db = $database->dbConnection();
+		$this->conn = $db;
+    }
+
 	private function engage($uname){
 		try
 		{
-			$stmt = $this->conn->prepare("UPDATE user SET engaged = '1' WHERE user_name = :uname");
+			$stmt = $this->conn->prepare("UPDATE user SET engaged = '1' WHERE user_id = :uname");
 
 			$stmt->bindparam(":uname",$uname);
 			$stmt->execute();
@@ -23,7 +31,7 @@ class TASK
 	private function disengage($uname){
 		try
 		{
-			$stmt = $this->conn->prepare("UPDATE user SET engaged = '0' WHERE user_name = :uname");
+			$stmt = $this->conn->prepare("UPDATE user SET engaged = '0' WHERE user_id = :uname");
 
 			$stmt->bindparam(":uname",$uname);
 			$stmt->execute();
@@ -34,66 +42,185 @@ class TASK
 		}
 	}
 
-	public function __construct()
-	{
-		$database = new Database();
-		$db = $database->dbConnection();
-		$this->conn = $db;
-    }
 	
 	public function runQuery($sql)
 	{
 		$stmt = $this->conn->prepare($sql);
 		return $stmt;
 	}
-	public function getName($userid)
+
+	private function createCardsForAssigned()
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT user_id, full_name FROM  user  WHERE user_id=$userid ");
+			$stmt = $this->conn->prepare("SELECT user.full_name, task.task_desc, task.completed, task.date_completed, user.user_id FROM  task JOIN user on (user.user_id = task.task_for) WHERE task.completed='0' AND user.head='0'");
 			$stmt->execute();
-			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
-			echo $taskRow->full_name;
+			if($stmt->rowCount()){
+				while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
+					echo "
+					<div class='col l4'>
+						<div class='card'>
+				          <div class='card blue darken-3'>
+				            <div class='card-content white-text'>
+				              <span class='card-title'>$taskRow->full_name</span>
+				              <p>$taskRow->task_desc</p>
+				            </div>
+				            <div class='card-action blue darken-4'>
+
+				            <button name='edit'  class='waves-effect waves-light deep-purple darken-2 btn edit' id='edit".$taskRow->user_id."' onclick='showEdit(".$taskRow->user_id.")'>Edit</button>
+							
+
+							<div id='editForm".$taskRow->user_id."' class='editForm'  style='display:none;'>
+
+								<form method='post'>
+
+									<h4 class='form-signin-heading' style='color:#673ab7;'>Edit</h4>
+
+									<input type='text' class='form-control' name='txt_shid' value='".$taskRow->user_id."' style='display:none;' />		
+
+
+									<input type='text' class='form-control' name='txt_task' value='".$taskRow->task_desc."' />
+
+
+									<input type='date' class='datepicker' name='txt_date' value='".$taskRow->date_completed."'/>
+
+									<button type='submit' name='btn-save' class='waves-effect waves-light deep-purple darken-2 btn'>
+									    Save
+									</button>
+
+									<button name='btn-delete'  class='waves-effect waves-light deep-purple darken-2 btn'>
+										Delete
+									</button>
+
+								</form>
+							</div>	
+
+
+
+
+
+
+				            </div>
+				          </div>
+			        	</div>
+		        	</div>
+		        	";
+				}
+			}
 		}
+
 		catch(PDOException $e)
 		{
 			echo $e->getMessage();
 		}
+
 	}
-	public function busy($shname){
-			try
-		{
-			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
-			$stmt->execute();
-			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
-			if($taskRow){
-			return true;
-		}
-		else {
-			return false;
-		}
-		}
-		catch(PDOException $e)
-		{
-			echo $e->getMessage();
-		}
-	}
-	public function getMyTasks($shname)
+
+	private function createCardsForAvailable()
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
+			$stmt = $this->conn->prepare("SELECT full_name, user_id FROM user WHERE engaged='0' AND head='0'");
 			$stmt->execute();
-			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
-			if($taskRow){
-			echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc, '<br>';
+			if($stmt->rowCount()){
+				while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){	
+					echo "
+					<div class='col l4'>
+						<div class='card'>
+				          <div class='card blue darken-3'>
+				            <div class='card-content white-text'>
+				              <span class='card-title'>$taskRow->full_name</span>
+				              <p>No Current Assignments</p>
+				            </div>
+
+				            <div class='card-action blue darken-4'>
+
+				               <button name='assign'  class='waves-effect waves-light deep-purple darken-2 btn assign".$taskRow->user_id."' onclick='showAssign(".$taskRow->user_id.")'>Assign</button>
+								
+
+								<div id='assignForm".$taskRow->user_id."' class='assignForm' style='display:none;'>
+									<form method='post'>
+
+									<h4 class='form-signin-heading' style='color:#673ab7;'>Assign</h4>
+
+									<input type='text' class='form-control' name='txt_shid' value='".$taskRow->user_id."' style='display:none;' />		
+
+
+									<input type='text' class='form-control' name='txt_task' placeholder='Task' />
+
+
+									<input type='date' class='datepicker' name='txt_date' placeholder='Date' />
+
+									<button type='submit' name='btn-assign' class='waves-effect waves-light deep-purple darken-2 btn'>
+									    Assign
+									</button>
+
+									</form>
+								</div>
+				              
+
+
+				            </div>
+				          </div>
+			        	</div>
+		        	</div>
+		        	";
+				}
+			}
 		}
-		}
+
 		catch(PDOException $e)
 		{
 			echo $e->getMessage();
 		}
+
 	}
+
+	public function createCards(){
+		$this->createCardsForAssigned();
+		$this->createCardsForAvailable();
+	}
+
+
+
+	// public function busy($shname){
+	// 		try
+	// 	{
+	// 		$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
+	// 		$stmt->execute();
+	// 		$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
+	// 		if($taskRow){
+	// 		return true;
+	// 	}
+	// 	else {
+	// 		return false;
+	// 	}
+	// 	}
+	// 	catch(PDOException $e)
+	// 	{
+	// 		echo $e->getMessage();
+	// 	}
+	// }
+
+
+	// public function getMyTasks($shname)
+	// {
+	// 	try
+	// 	{
+	// 		$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
+	// 		$stmt->execute();
+	// 		$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
+	// 		if($taskRow){
+	// 		echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc, '<br>';
+	// 	}
+	// 	}
+	// 	catch(PDOException $e)
+	// 	{
+	// 		echo $e->getMessage();
+	// 	}
+	// }
+
+
 	public function getActiveTasks()
 	{
 		try
@@ -143,23 +270,23 @@ class TASK
 		}
 	}
 
-	public function assignTask($hname, $shname, $task, $adate, $ddate)
+	public function assignTask($hname, $shid, $task, $adate, $ddate)
 	{
 
 		try
 		{
 			$stmt = $this->conn->prepare("INSERT INTO task(task_by,task_for,task_desc,date_assigned,date_completed) 
-		                                               VALUES(:hname, :shname, :task, :adate, :ddate)");
-												  
+		                                               VALUES(:hname, :shid, :task, :adate, :ddate)");
+				  
 			$stmt->bindparam(":hname", $hname);
-			$stmt->bindparam(":shname", $shname);
+			$stmt->bindparam(":shid", $shid);
 			$stmt->bindparam(":task", $task);
 			$stmt->bindparam(":adate", $adate);
 			$stmt->bindparam(":ddate", $ddate);
 													  
 				
 			$stmt->execute();
-			$this->engage($shname);
+			$this->engage($shid);
 			return $stmt;
 			
 		}
@@ -169,17 +296,18 @@ class TASK
 		}
 	}
 
-	public function editTask($task,$shname)
+	public function editTask($task,$shid,$ddate)
 	{
 
 		try  
 		{
-			$stmt = $this->conn->prepare("UPDATE task SET task_desc=:task WHERE task_for='$shname' AND completed=0");
+			$stmt = $this->conn->prepare("UPDATE task SET task_desc=:task, date_completed=:ddate WHERE task_for=:shid AND completed=0");
 												  
 			$stmt->bindparam(":task", $task);
+			$stmt->bindparam(":shid", $shid);
+			$stmt->bindparam(":ddate", $ddate);
 
 			$stmt->execute();
-			$this->engage($shname);
 			return $stmt;
 			
 		}
