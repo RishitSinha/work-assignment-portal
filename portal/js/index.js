@@ -16,13 +16,16 @@ $(function() {
   
 });
 $(document).ready(function() {
-
+  $('.save').hide();
 
     $('.edit').click(function() {
             if ($('input').attr('disabled')) {
                 $('input').removeAttr('disabled');
+                $('.edit').hide();
+                $('.save').show();
             }
             else {
+              
                 $('input').attr({
                     'disabled': 'disabled'
                 });

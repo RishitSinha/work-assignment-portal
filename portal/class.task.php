@@ -86,11 +86,7 @@ class TASK
 			$stmt->execute();
 			$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
 			if($taskRow){
-			echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc,'<br>';
-			return true;
-		}
-		else {
-			return false;
+			echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc, '<br>';
 		}
 		}
 		catch(PDOException $e)
@@ -173,13 +169,12 @@ class TASK
 		}
 	}
 
-	public function edit($task,$shname)
+	public function editTask($task,$shname)
 	{
 
-		try
+		try  
 		{
-			$stmt = $this->conn->prepare("UPDATE task(task_desc) 
-		                                               VALUES(:task) WHERE task_for='$shname' AND completed=0");
+			$stmt = $this->conn->prepare("UPDATE task SET task_desc=:task WHERE task_for='$shname' AND completed=0");
 												  
 			$stmt->bindparam(":task", $task);
 

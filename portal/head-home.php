@@ -77,7 +77,7 @@
           <div class="card deep-purple darken-1">
             <div class="card-content white-text">
               <span class="card-title"><?php $task_data->getName('6'); ?></span>
-              <input type="text" value='<?php $task_data->getMyTasks("abhinav") ?>' disabled/></input>
+              <input type="text"  name='txt_task6' value='<?php $task_data->getMyTasks("abhinav") ?>' disabled/></input>
             </div>
             
             <?php if($task_data->busy('abhinav')){ ?>
@@ -85,15 +85,24 @@
               
             <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
-                </button><br><br><br>
+                </button>
+            
                 <form method="post">
+                <button type="submit" name="btn-save6" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
+                </button><br><br><br>
             <button type="submit" name="btn-delete6" class="waves-effect waves-light deep-purple darken-2 btn" >
                       Delete
                 </button>
-                </form><br><br>
-                <input type="checkbox" id="test5" />
-              <label for="test5"></label>
-                <?php if(isset($_POST['btn-delete6']))
+                </form>
+                <!--<input type="checkbox" id="test5" />
+              <label for="test5"></label>-->
+              <?php if(isset($_POST['btn-save6']))
+              {
+                //$task = $_REQUEST['txt_task6'];
+                $task_data->editTask('new work','abhinav');
+              }
+               if(isset($_POST['btn-delete6']))
               {
                 $task_data->deleteTask('abhinav');
               }
@@ -145,8 +154,11 @@
             </div>
             
             <?php if($task_data->busy('ashutosh')){ ?>
-              <button name="btn-edit"  class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete7" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -159,7 +171,7 @@
               }
                }
               else {  ?>
-            <button name="assign"  class="waves-effect waves-light deep-purple darken-2 btn assign">Assign</button>
+            <button name="assign" class="waves-effect waves-light deep-purple darken-2 btn assign">Assign</button>
               <div id="assignForm">
         <form method="post">
           
@@ -205,8 +217,11 @@
             </div>
             
             <?php if($task_data->busy('dipramit')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete8" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -267,8 +282,11 @@
             </div>
             
             <?php if($task_data->busy('esha')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete9" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -327,8 +345,11 @@
             </div>
             
             <?php if($task_data->busy('harshit')){ ?>
-              <button name="btn-edit"  class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete10" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -387,8 +408,11 @@
             </div>
             
             <?php if($task_data->busy('paras')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete11" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -449,8 +473,11 @@
             </div>
             
             <?php if($task_data->busy('pradhumn')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete12" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -509,8 +536,11 @@
             </div>
             
             <?php if($task_data->busy('rishit')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete13" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -570,8 +600,11 @@
             </div>
             
             <?php if($task_data->busy('sagar')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete14" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -633,8 +666,11 @@
             </div>
             
             <?php if($task_data->busy('sahil')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete15" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -695,8 +731,11 @@
             
             
             <?php if($task_data->busy('shivanshu')){ ?>
-              <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete16" class="waves-effect waves-light deep-purple darken-2 btn">
@@ -757,8 +796,11 @@
             
             
             <?php if($task_data->busy('shubham')){ ?>
-              <button name="btn-edit"  class="waves-effect waves-light deep-purple darken-2 btn edit" >
+               <button name="btn-edit" class="waves-effect waves-light deep-purple darken-2 btn edit" >
                       Edit
+                </button>
+                <button name="btn-save" class="waves-effect waves-light deep-purple darken-2 btn save" >
+                      Save
                 </button><br><br><br>
             <form method="post">
             <button type="submit" name="btn-delete17" class="waves-effect waves-light deep-purple darken-2 btn">
