@@ -13,48 +13,7 @@
   $stmt->execute(array(":user_id"=>$user_id));
   
   $userRow=$stmt->fetch(PDO::FETCH_ASSOC);
-
-  if(!$userRow['head']){
-    echo "Unknown User. Please Login Again.";
-    $auth_user->redirect('logout.php?logout=true');
-  }
-
   $task_data = new TASK(); 
-
-  if(isset($_POST['btn-assign']))
-  {
-    $shid = strip_tags($_POST['txt_shid']);
-    $task = strip_tags($_POST['txt_task']);
-    $ddate = strip_tags($_POST['txt_date']);
-      
-    $task_data->assignTask($userRow['full_name'], $shid, $task, date("Y/m/d"),$ddate);
-  }
-  if(isset($_POST['btn-groupassign']))
-  {
-  if(!empty($_POST['checklist'])){
-     $task = strip_tags($_POST['txt_task']);
-    $ddate = strip_tags($_POST['txt_date']);
-  // Loop to store and display values of individual checked checkbox.
-  foreach($_POST['checklist'] as $selected){
-  echo $selected."</br>";
-  $task_data->assignTask($userRow['full_name'], $selected, $task, date("Y/m/d"),$ddate);
-  }
-  }
-  }
-  
-  if(isset($_POST['btn-save']))
-  {
-    $shid = strip_tags($_POST['txt_shid']);
-    $task = strip_tags($_POST['txt_task']);
-    $ddate = strip_tags($_POST['txt_date']);
-      
-    $task_data->editTask($task,$shid,$ddate);
-  }
- if(isset($_POST['btn-delete']))
-  {
-    $shid = strip_tags($_POST['txt_shid']);
-    $task_data->deleteTask($shid);
-  }
 
 ?>
 
@@ -79,7 +38,7 @@
 
 <body>
   <nav class="deep-purple " role="navigation" style="margin-bottom:5vh;">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Head's Portal</a>
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Sub Head's Portal</a>
      <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="logout.php?logout=true">Logout</a></li>
     </div>
@@ -88,46 +47,69 @@
     <div class="col s8 offset-s2">
       <h2 style="color: #673ab7 ;"><?php print($userRow['full_name']); ?></h2>
       <button class='waves-effect waves-light deep-purple darken-2 btn' onclick=showATask()>All Tasks</button>
-      <button class='waves-effect waves-light deep-purple darken-2 btn' onclick=showCTask()>Current Tasks</button>
+      <button class='waves-effect waves-light deep-purple darken-2 btn' onclick=showCTask()>My Tasks</button>
       <hr>
 
-   
-      <div id="cTask" class="row" style="margin-top: 10vh;">
-         <?php 
-            $task_data->createCards();
-            $task_data->assignInGroup();echo "<br>";
-          ?>
-      </div>
+    <div class="row" style="margin-top: 10vh;">
+    <div class="table-responsive-vertical shadow-z-1">
+  <table id="cTask" class="table table-hover table-mc-light-blue">
+      <thead>
+        <tr>
+          <th>Assigned By</th>
+          <th>Task</th>
+          <th>Assigned To</th>
+          <th>Assigned Date</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Completed</th>
 
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $task_data->getMyTasks($user_id);
 
-      <div id="aTask" class="row" style="margin-top: 10vh;">
-          <div class="table-responsive-vertical shadow-z-1">
-              <table id="table" class="table table-hover table-mc-light-blue">
-                  <thead>
-                    <tr>
-                      <th>Assigned By</th>
-                      <th>Task</th>
-                      <th>Assigned To</th>
-                      <th>Assigned Date</th>
-                      <th>Due Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                    $task_data->getActiveTasks();
-                    $task_data->getCompletedTasks();
-                   ?>
-                  </tbody>
-                </table>
-          </div>
-      </div>
+       ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+  <div class="table-responsive-vertical shadow-z-1">
+  <table id="aTask" class="table table-hover table-mc-light-blue">
+      <thead>
+        <tr>
+          <th>Assigned By</th>
+          <th>Task</th>
+          <th>Assigned To</th>
+          <th>Assigned Date</th>
+          <th>Due Date</th>
+          <th>Status</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $task_data->getActiveTasks();
+        $task_data->getCompletedTasks();
+
+       ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+    
+    
+  </body>
+</html>
+
+    </div>
 
     </div>
                       
 
 
-  </div>
+                    </div>
 
 
 
@@ -142,7 +124,6 @@
     console.log("Show Edit: "+$id);
     $('#editForm'+$id).fadeToggle();
   }
-
   $(document).ready(function() {
     $('#aTask').hide();
     $('#cTask').show();
@@ -157,12 +138,14 @@
      $('#aTask').toggle();
      $('#cTask').hide();
   }
-
   function showAssign($id){
     console.log("Show Assign: "+$id);
     $('#assignForm'+$id).fadeToggle();
   }
 
+  $('input[type="checkbox"]').change(function(){
+    <?php $task_data->getChecked($user_id);?>
+  });
     // $('.datepicker').pickadate({
     //   selectMonths: true, // Creates a dropdown to control month
     //   selectYears: 15, // Creates a dropdown of 15 years to control year

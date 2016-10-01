@@ -19,7 +19,7 @@ if(isset($_POST['btn-login']))
           $login->redirect('head-home.php');
         }
         else{
-          $login->redirect('home.php');
+          $login->redirect('subhead-home.php');
         }
   }
   else

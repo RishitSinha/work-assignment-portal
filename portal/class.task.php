@@ -53,7 +53,7 @@ class TASK
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT user.full_name, task.task_desc, task.completed, task.date_completed, user.user_id FROM  task JOIN user on (user.user_id = task.task_for) WHERE task.completed='0' AND user.head='0'");
+			$stmt = $this->conn->prepare("SELECT user.full_name, task.task_desc, task.completed,task.task_by, task.date_completed, user.user_id FROM  task JOIN user on (user.user_id = task.task_for) WHERE task.completed='0' AND user.head='0'");
 			$stmt->execute();
 			if($stmt->rowCount()){
 				while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
@@ -63,7 +63,7 @@ class TASK
 				          <div class='card blue darken-3'>
 				            <div class='card-content white-text'>
 				              <span class='card-title'>$taskRow->full_name</span>
-				              <p>$taskRow->task_desc</p>
+				              <p>".$taskRow->task_by." Assigned task: $taskRow->task_desc</p>
 				            </div>
 				            <div class='card-action blue darken-4'>
 
@@ -135,7 +135,7 @@ class TASK
 
 				            <div class='card-action blue darken-4'>
 
-				               <button name='assign'  class='waves-effect waves-light deep-purple darken-2 btn assign".$taskRow->user_id."' onclick='showAssign(".$taskRow->user_id.")'>Assign</button>
+				               <button name='assign'  class='waves-effect waves-light deep-purple darken-2 btn assign".$taskRow->user_id."' onclick='showAssign(".$taskRow->user_id.")'>Assign</button><br><br>
 								
 
 								<div id='assignForm".$taskRow->user_id."' class='assignForm' style='display:none;'>
@@ -181,6 +181,47 @@ class TASK
 		$this->createCardsForAvailable();
 	}
 
+	public function assignInGroup(){
+		try
+		{
+			$stmt = $this->conn->prepare("SELECT full_name, user_id FROM user WHERE engaged='0' AND head='0'");
+			$stmt->execute();
+			if($stmt->rowCount()){
+				echo "<button name='assign'  class='waves-effect waves-light deep-purple darken-2 btn assign' onclick=showAssign('0')>Assign In Group</button><br><br>
+				<div id='assignForm0' class='assignForm' style='display:none;'>
+                  <form method='post'>
+
+                  <h4 class='form-signin-heading' style='color:#673ab7;'>Assign For Group</h4>
+					";
+				while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){	
+			echo "
+                  <input type='text' class='form-control' name='txt_shid' value='$taskRow->full_name' style='display:none;' />    <input type='checkbox' id='checkbox".$taskRow->user_id."' name='checklist[]' value='".$taskRow->user_id."' class='checkbox' />
+              						<label for='checkbox".$taskRow->user_id."'>".$taskRow->full_name."</label><br>
+              						";
+              }
+              echo "
+
+
+                  <input type='text' class='form-control' name='txt_task' placeholder='Task' />
+
+
+                  <input type='date' class='datepicker' name='txt_date' placeholder='Date' />
+
+                  <button type='submit' name='btn-groupassign' class='waves-effect waves-light deep-purple darken-2 btn'>
+                      Assign
+                  </button>
+
+                  </form>
+                </div>";
+            }
+        
+	}
+	catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+
+}
 
 
 	// public function busy($shname){
@@ -203,35 +244,100 @@ class TASK
 	// }
 
 
-	// public function getMyTasks($shname)
-	// {
-	// 	try
-	// 	{
-	// 		$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.task_for='$shname' AND task.completed=0");
-	// 		$stmt->execute();
-	// 		$taskRow=$stmt->fetch(PDO::FETCH_OBJ);
-	// 		if($taskRow){
-	// 		echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc, '<br>';
-	// 	}
-	// 	}
-	// 	catch(PDOException $e)
-	// 	{
-	// 		echo $e->getMessage();
-	// 	}
-	// }
-
-
-	public function getActiveTasks()
+	public function getMyTasks($shid)
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , task.task_for , user.full_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.completed=0");
+			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc ,task.date_assigned,task.date_completed,task.completed, user.full_name,user.user_id FROM task JOIN user on (user.user_id = task.task_for) WHERE task.task_for=:shid");
+			$stmt->bindparam(":shid", $shid);
 			$stmt->execute();
 			while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
-				echo $taskRow->full_name." assigned the task: ".$taskRow->task_desc." to ".$taskRow->task_for,'<br>';
+				if($taskRow->completed){
+			echo "<tr style='color:green'>
+	          <td data-title='assingedby'>".$taskRow->task_by."</td>
+	          <td data-title='task'>".$taskRow->task_desc."</td>
+	          <td data-title='Name'>".$taskRow->full_name."</td>
+	          <td data-title='adate'>".$taskRow->date_assigned."</td>
+	          <td data-title='ddate'>".$taskRow->date_completed."</td> 
+	          <td data-title='Status'>Completed</td>
+
+	        </tr>";
+		}
+		else{
+			echo "<tr style='color:red'>
+          <td data-title='assingedby'>".$taskRow->task_by."</td>
+          <td data-title='task'>".$taskRow->task_desc."</td>
+          <td data-title='Name'>".$taskRow->full_name."</td>
+          <td data-title='adate'>".$taskRow->date_assigned."</td>
+          <td data-title='ddate'>".$taskRow->date_completed."</td> 
+          <td data-title='Status'>Not Completed</td>
+          <td data-title='check'>
+	            	<input type='checkbox' id='checkbox".$taskRow->user_id."' name='check' class='checkbox' />
+	              		<label for='checkbox".$taskRow->user_id."'></label><br>
+	           </td>
+        </tr>";
+			
+		}}}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
+
+	
+public function getChecked($shid)
+{
+try{
+	$stmt = $this->conn->prepare("UPDATE task SET completed='1' WHERE task_for=:shid");
+	$stmt->bindparam(":shid", $shid);
+	$stmt->execute();
+	$this->disengage($shid);
+
+}
+catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+}
+
+public function getActiveTasks()
+	{
+		try
+		{
+			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc ,task.date_assigned,task.date_completed, task.task_for , user.full_name FROM task JOIN user on (user.full_name = task.task_by) WHERE task.completed=0");
+			$stmt->execute();
+			while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
+				echo "<tr style='color:red'>
+          <td data-title='assingedby'>".$taskRow->full_name."</td>
+          <td data-title='task'>".$taskRow->task_desc."</td>
+          <td data-title='Name'>".$this->getName($taskRow->task_for)."</td>
+          <td data-title='adate'>".$taskRow->date_assigned."</td>
+          <td data-title='ddate'>".$taskRow->date_completed."</td> 
+          <td data-title='Status'>Not Completed</td>
+        </tr>";
 			}
 		}
 		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
+
+
+ 		//$taskRow->full_name." assigned the task: ".$taskRow->task_desc." to ".$this->getName($taskRow->task_for),'<br>';
+
+	private function getName($uid){
+		try
+		{
+			$stmt = $this->conn->prepare("SELECT user.user_id, task.task_for , user.full_name FROM task JOIN user on (user.user_id = task.task_for) WHERE user.user_id =:uid");
+			$stmt->bindparam(":uid", $uid);
+			$stmt->execute();
+		
+		while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
+				return $taskRow->full_name;
+			}
+		}
+			catch(PDOException $e)
 		{
 			echo $e->getMessage();
 		}
@@ -241,10 +347,17 @@ class TASK
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc , task.task_for , user.user_name FROM task JOIN user on (user.user_id = task.task_by) WHERE task.completed=1");
+			$stmt = $this->conn->prepare("SELECT task.task_by , task.task_desc ,task.date_assigned,task.date_completed, task.task_for , user.full_name FROM task JOIN user on (user.full_name = task.task_by) WHERE task.completed=1");
 			$stmt->execute();
 			while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
-				echo $taskRow->user_name." assigned the task: ".$taskRow->task_desc." to ".$taskRow->task_for,'<br>';
+				echo "<tr style='color:green'>
+          <td data-title='assingedby'>".$taskRow->full_name."</td>
+          <td data-title='task'>".$taskRow->task_desc."</td>
+          <td data-title='Name'>".$this->getName($taskRow->task_for)."</td>
+          <td data-title='adate'>".$taskRow->date_assigned."</td>
+          <td data-title='ddate'>".$taskRow->date_completed."</td> 
+          <td data-title='Status'>Completed</td>
+        </tr>";
 			}
 		}
 		catch(PDOException $e)
