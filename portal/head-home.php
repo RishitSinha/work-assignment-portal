@@ -26,10 +26,30 @@
     $shid = strip_tags($_POST['txt_shid']);
     $task = strip_tags($_POST['txt_task']);
     $ddate = strip_tags($_POST['txt_date']);
-      
-    $task_data->assignTask($userRow['full_name'], $shid, $task, date("Y/m/d"),$ddate);
+    $task_data->assignTask($userRow['full_name'], $shid, "0",$task, date("Y/m/d"),$ddate);
+  }
+  if(isset($_POST['btn-groupassign']))
+  {
+    if(!empty($_POST['checklist'])){
+       $task = strip_tags($_POST['txt_task']);
+       $group = strip_tags($_POST['txt_group']);
+      $ddate = strip_tags($_POST['txt_date']);
+    // Loop to store and display values of individual checked checkbox.
+      foreach($_POST['checklist'] as $selected){
+      $task_data->assignTask($userRow['full_name'], $selected, $group, $task, date("Y/m/d"),$ddate);
+      }
+    }
   }
   
+ 
+  if(isset($_POST['btn-add-to-group']))
+  {
+    $shid = strip_tags($_POST['txt_shid']);
+    $group = strip_tags($_POST['txt_group_no']);
+    $task_data->addToGroup($group,$shid);
+  }
+
+
   if(isset($_POST['btn-save']))
   {
     $shid = strip_tags($_POST['txt_shid']);
@@ -38,10 +58,26 @@
       
     $task_data->editTask($task,$shid,$ddate);
   }
+
+  if(isset($_POST['btn-saveGroup']))
+  {
+    $shid = strip_tags($_POST['txt_shid']);
+    $task = strip_tags($_POST['txt_task']);
+    $ddate = strip_tags($_POST['txt_date']);
+      
+    $task_data->editGroupTask($task,$shid,$ddate);
+  }
+
  if(isset($_POST['btn-delete']))
   {
     $shid = strip_tags($_POST['txt_shid']);
     $task_data->deleteTask($shid);
+  }
+
+   if(isset($_POST['btn-deleteGroup']))
+  {
+    $shid = strip_tags($_POST['txt_shid']);
+    $task_data->deleteTaskGroup($shid);
   }
 
 ?>
@@ -75,22 +111,54 @@
   <div class="row">
     <div class="col s8 offset-s2">
       <h2 style="color: #673ab7 ;"><?php print($userRow['full_name']); ?></h2>
+      <button class='waves-effect waves-light deep-purple darken-2 btn' onclick=showATask()>All Tasks</button>
+      <button class='waves-effect waves-light deep-purple darken-2 btn' onclick=showCTask()>Current Tasks</button>
       <hr>
 
-      <?php
-        $task_data->getActiveTasks();
-        echo '<hr>';
-        $task_data->getCompletedTasks();
-       ?>
+   
+      <div id="cTask" class="row" style="margin-top: 5vh;">
+       <div class="row">
+         <?php 
+            $task_data->createCards();
+            $task_data->assignInGroup();
+          ?>
+      </div>
+          <div class="row" style="margin-top: 5vh;">
+          <h4 style="color: #673ab7 ;">Assigned In Group</h4>
+          <?php 
+            $task_data->createGroup();
+          ?>
+          </div>
+      </div>
 
 
-    <div class="row" style="margin-top: 10vh;">
-       <?php 
-          $task_data->createCards();
-        ?>
+      <div id="aTask" class="row" style="margin-top: 10vh;">
+          <div class="table-responsive-vertical shadow-z-1 col s8 offset-s  2">
+              <table id="table" class="table table-hover table-mc-light-blue">
+                  <thead>
+                    <tr>
+                      <th>Assigned By</th>
+                      <th>Task</th>
+                      <th>Assigned To</th>
+                      <th>Assigned Date</th>
+                      <th>Due Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $task_data->getActiveTasks();
+                    $task_data->getCompletedTasks();
+                   ?>
+                  </tbody>
+                </table>
+          </div>
+      </div>
+
     </div>
+                      
 
-    </div>
+
   </div>
 
 
@@ -103,8 +171,30 @@
 
 
   function showEdit($id){
-    console.log("Show Edit: "+$id);
     $('#editForm'+$id).fadeToggle();
+  };
+
+  function showEditGroup($id){
+    $('#editGroupForm'+$id).fadeToggle();
+  };
+
+  function showAssignToGroup($id){
+    $('#assignToGroupForm'+$id).fadeToggle();
+  };
+
+  $(document).ready(function() {
+    $('#aTask').hide();
+    $('#cTask').show();
+    });
+
+  function showCTask(){
+     $('#cTask').show();
+     $('#aTask').hide();
+  }
+
+  function showATask(){
+     $('#aTask').show();
+     $('#cTask').hide();
   }
 
   function showAssign($id){

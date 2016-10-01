@@ -19,7 +19,7 @@ if(isset($_POST['btn-login']))
           $login->redirect('head-home.php');
         }
         else{
-          $login->redirect('home.php');
+          $login->redirect('subhead-home.php');
         }
   }
   else
@@ -46,15 +46,15 @@ if(isset($_POST['btn-login']))
 
 
 <body>
-  <nav class="light-blue lighten-1" role="navigation" style="margin-bottom:15vh;">
+  <nav class="deep-purple  lighten-1" role="navigation" style="margin-bottom:15vh;">
     <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo center">Work Assignment Portal</a>
     </div>
   </nav>
   <div class="row">
     <div class="col s4 offset-s4">
       <center>
-        <h1>Welcome!</h1>
-        <h5>Please Sign-In to Continue</h5>
+        <h1 class="deep-purple-text">Welcome!</h1>
+        <h5 >Please Sign-In to Continue</h5>
       </center>
     </div>
   </div>
@@ -86,7 +86,7 @@ if(isset($_POST['btn-login']))
       </div>
       <div class="row">
         <div class="input-field col s4 offset-s4">
-          <button type="submit" name="btn-login" class="waves-effect waves-light btn">Sign-In<i class="material-icons right">input</i></button>
+          <button type="submit" name="btn-login" class="waves-effect waves-light deep-purple darken-2 btn">Sign-In<i class="material-icons right">input</i></button>
         </div>
       </div>
     </form>

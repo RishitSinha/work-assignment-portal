@@ -1,10 +1,4 @@
 $(function() {
-  
-  // contact form animations
-  // $('.assign').click(function() {
-  //   $('#assignForm').fadeToggle();
-  // });
-
 
   $(document).mouseup(function (e) {
     var container = $(".assignForm");
@@ -26,7 +20,23 @@ $(function() {
   });
   
 });
+ // $('input[name=check]').click(function(){
+ //    var shid = $(this).attr('id');
 
+ //    if($(this).attr('checked')) {
+ //        var flag = 1;
+ //    } else {
+ //        var flag = 0;
+ //    }
+
+ //    $.ajax({
+ //        type:'GET',
+ //        url:'class.task.php',
+ //        data:shid
+ //    });
+ //    console.log('shid: ' + shid );
+
+ // });
 
 // $(document).ready(function() {
 //   $('.save').hide();
