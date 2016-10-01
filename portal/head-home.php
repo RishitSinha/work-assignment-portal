@@ -33,11 +33,11 @@
   {
   if(!empty($_POST['checklist'])){
      $task = strip_tags($_POST['txt_task']);
+     $group = strip_tags($_POST['txt_group']);
     $ddate = strip_tags($_POST['txt_date']);
   // Loop to store and display values of individual checked checkbox.
   foreach($_POST['checklist'] as $selected){
-  echo $selected."</br>";
-  $task_data->assignTask($userRow['full_name'], $selected, $task, date("Y/m/d"),$ddate);
+  $task_data->assignTask($userRow['full_name'], $selected, $group, $task, date("Y/m/d"),$ddate);
   }
   }
   }
@@ -95,8 +95,14 @@
       <div id="cTask" class="row" style="margin-top: 10vh;">
          <?php 
             $task_data->createCards();
-            $task_data->assignInGroup();echo "<br>";
+            $task_data->assignInGroup();
           ?>
+          <div class="row" style="margin-top: 40vh;">
+          <h4 style="color: #673ab7 ;">Assigned In Group</h4>
+          <?php 
+            $task_data->createGroup();
+          ?>
+          </div>
       </div>
 
 

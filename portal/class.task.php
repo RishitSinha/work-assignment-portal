@@ -41,7 +41,19 @@ class TASK
 			echo $e->getMessage();
 		}
 	}
+	private function removeFromGroup($uname){
+		try
+		{
+			$stmt = $this->conn->prepare("UPDATE task SET group_no = '0' WHERE task_for = :uname");
 
+			$stmt->bindparam(":uname",$uname);
+			$stmt->execute();
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
 	
 	public function runQuery($sql)
 	{
@@ -53,7 +65,7 @@ class TASK
 	{
 		try
 		{
-			$stmt = $this->conn->prepare("SELECT user.full_name, task.task_desc, task.completed,task.task_by, task.date_completed, user.user_id FROM  task JOIN user on (user.user_id = task.task_for) WHERE task.completed='0' AND user.head='0'");
+			$stmt = $this->conn->prepare("SELECT user.full_name, task.task_desc, task.completed,task.task_by, task.date_completed, user.user_id FROM  task JOIN user on (user.user_id = task.task_for) WHERE task.completed='0' AND user.head='0' AND task.group_no='0'");
 			$stmt->execute();
 			if($stmt->rowCount()){
 				while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
@@ -94,10 +106,6 @@ class TASK
 
 								</form>
 							</div>	
-
-
-
-
 
 
 				            </div>
@@ -157,9 +165,52 @@ class TASK
 
 									</form>
 								</div>
-				              
+
+				            </div>
+				          </div>
+			        	</div>
+		        	</div>
+		        	";
+				}
+			}
+		}
+
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+
+	}
+	private function createCardsForGroup()
+	{
+		try
+		{
+			$stmt = $this->conn->prepare("SELECT user.full_name, task.task_desc, task.completed,task.task_by, task.date_completed, user.user_id,task.group_no FROM  task JOIN user on (user.user_id = task.task_for) WHERE task.completed='0' AND user.head='0' AND task.group_no!='0'");
+			$stmt->execute();
+			if($stmt->rowCount()){
+				while($taskRow=$stmt->fetch(PDO::FETCH_OBJ)){
+					echo "
+					<div class='col l4'>
+					Group No :".$taskRow->group_no." 
+						<div class='card'>
+				          <div class='card blue darken-3'>
+				            <div class='card-content white-text'>
+				              <span class='card-title'>$taskRow->full_name</span>
+				              <p>".$taskRow->task_by." Assigned task: $taskRow->task_desc</p>
+				            </div>
+				            <div class='card-action blue darken-4'>
+				            <form method='post'>
+
+									<input type='text' class='form-control' name='txt_shid' value='".$taskRow->user_id."' style='display:none;' />		
 
 
+									<button name='btn-delete'  class='waves-effect waves-light deep-purple darken-2 btn'>
+										Remove From Group
+									</button>
+
+								</form>
+							
+							
 				            </div>
 				          </div>
 			        	</div>
@@ -179,6 +230,10 @@ class TASK
 	public function createCards(){
 		$this->createCardsForAssigned();
 		$this->createCardsForAvailable();
+	}
+	public function createGroup(){
+		echo "<hr>";
+		$this->createCardsForGroup();
 	}
 
 	public function assignInGroup(){
@@ -200,10 +255,9 @@ class TASK
               						";
               }
               echo "
-
-
                   <input type='text' class='form-control' name='txt_task' placeholder='Task' />
 
+                  <input type='text' class='form-control' name='txt_group' placeholder='Group No' />
 
                   <input type='date' class='datepicker' name='txt_date' placeholder='Date' />
 
@@ -374,6 +428,7 @@ public function getActiveTasks()
 			$stmt = $this->conn->prepare("DELETE FROM task WHERE task_for='$shname' AND completed=0");
 			$stmt->execute();
 			$this->disengage($shname);
+			$this->removeFromGroup($shname);
 			return $stmt;
 			
 		}
@@ -383,16 +438,17 @@ public function getActiveTasks()
 		}
 	}
 
-	public function assignTask($hname, $shid, $task, $adate, $ddate)
+	public function assignTask($hname, $shid, $group, $task, $adate, $ddate)
 	{
 
 		try
 		{
-			$stmt = $this->conn->prepare("INSERT INTO task(task_by,task_for,task_desc,date_assigned,date_completed) 
-		                                               VALUES(:hname, :shid, :task, :adate, :ddate)");
+			$stmt = $this->conn->prepare("INSERT INTO task(task_by,task_for,group_no,task_desc,date_assigned,date_completed) 
+		                                               VALUES(:hname, :shid,:group, :task, :adate, :ddate)");
 				  
 			$stmt->bindparam(":hname", $hname);
 			$stmt->bindparam(":shid", $shid);
+			$stmt->bindparam(":group", $group);
 			$stmt->bindparam(":task", $task);
 			$stmt->bindparam(":adate", $adate);
 			$stmt->bindparam(":ddate", $ddate);
